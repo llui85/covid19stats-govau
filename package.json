@@ -1,0 +1,16 @@
+{
+        "name": "covid19stats",
+        "version": "1.0.0",
+        "description": "A scraper to download COVID-19 statistics from the AUSGov website, using the QLik WebSockets API.",
+        "main": "index.js",
+        "scripts": {
+                "main": "node index.js"
+        },
+        "author": "llui85",
+        "license": "ISC",
+        "dependencies": {
+                "dateformat": "^4.5.1",
+                "node-fetch": "^2.6.1",
+                "ws": "^7.5.1"
+        }
+}
