@@ -7,13 +7,13 @@ const fetch = require('node-fetch');
 const pageUri = "https://www.health.gov.au/news/health-alerts/novel-coronavirus-2019-ncov-health-alert/coronavirus-covid-19-current-situation-and-case-numbers";
 
 // get docId for the 2nd ws connection
-const getDocId = pageUri => {
+async function getDocId(pageUri) {
         return new Promise((resolve) => {
                 const referer = encodeURIComponent(pageUri);
                 const docListConnection = new WebSocket(`wss://covid19-data.health.gov.au/app/engineData?reloadUri=${referer}`);
 
                 docListConnection.on("open", () => {
-                        console.log("Connection to QLik established, loading list of documents.");
+                        console.log("Connection to QLik engine established, loading list of documents.");
                 });
 
                 docListConnection.on("message", data => {
@@ -33,7 +33,7 @@ const getDocId = pageUri => {
                                 let dataDocument = data.result.qDocList[0].value[0];
                                 let modifiedDate = dataDocument.qMeta.modifiedDate;
                                 let docId = dataDocument.qDocId;
-                                console.log(`Using document "${dataDocument.qDocName}", last modified at${modifiedDate}.`);
+                                console.log(`Using document "${dataDocument.qDocName}", last modified at ${modifiedDate}.`);
                                 docListConnection.terminate();
                                 resolve(docId);
                         }
@@ -42,7 +42,7 @@ const getDocId = pageUri => {
 }
 
 // scrape the page for the graph ids
-const getGraphIds = pageUri => {
+async function getGraphIds(pageUri) {
         return new Promise((resolve, reject) => {
                 fetch(pageUri).then(response => response.text()).then(html => {
                         // extract the config from the page
@@ -58,13 +58,40 @@ const getGraphIds = pageUri => {
         });
 }
 
-const getWsConnectionForDocId = new Promise((resolve, reject) => {
+async function getWsConnectionForDocId(docId, pageUri) {
+        return new Promise((resolve, reject) => {
+                const referer = encodeURIComponent(pageUri);
+                console.log(`Opening WebSocket for document: ${docId}`)
+                const qws = new WebSocket(`wss://covid19-data.health.gov.au/app/${docId}?reloadUri=${referer}`);
+                qws.on("open", () => {
+                        resolve(qws);
+                });
+        });
+}
 
-});
+let docId = "";
+let graphIds = [];
+
+// TODO use anonymous async/awaits here
 
 Promise.all([getDocId(pageUri), getGraphIds(pageUri)]).then(results => {
-        console.log(results);
+        docId = results[0];
+        graphIds = results[0];
+        return docId;
+}).then(docId => getWsConnectionForDocId(docId, pageUri)).then(ws => {
+        ws.on("message", data => {
+                console.log(data);
+        });
+        ws.send(JSON.stringify({
+                delta: true,
+                method: "OpenDoc",
+                handle: -1,
+                params: [docId],
+                id: 1,
+                jsonrpc: "2.0"
+        }));
 });
+
 /*
 let finalData = {};
 
