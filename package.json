@@ -12,5 +12,8 @@
                 "dateformat": "^4.5.1",
                 "node-fetch": "^2.6.1",
                 "ws": "^7.5.1"
+        },
+        "devDependencies": {
+                "cli-table": "^0.3.6"
         }
 }
