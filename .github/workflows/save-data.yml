@@ -1,0 +1,37 @@
+# Stolen from jxeeno/aust-govt-covid19-stats as he did such a great job - thank you if you're reading this!
+on:
+  schedule:
+    - cron: '0,2,5,10 10 * * *' # runs at 8:00pm, 8:02pm, 8:05pm, 8:10pm (AEST)
+    - cron: '13 * * * *' # runs hourly thereafter at 13 past the hour
+    # - cron: '0,2,5,10 9 * * *' # runs at 8:00pm, 8:02pm, 8:05pm, 8:10pm (AEDT)
+  push:
+    branches:
+      - master
+
+name: Fetch and store
+
+jobs:
+  fetch:
+    name: Fetch and store
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - uses: actions/setup-node@v2
+      with:
+        node-version: '12'
+    - name: npm install
+      timeout-minutes: 3
+      run: |
+        node index.js
+    - name: Download Data
+      timeout-minutes: 3
+      run: |
+        node index.js
+    - name: Push data
+      run: |
+          git config user.name llui85
+          git config user.email 47158068+llui85@users.noreply.github.com
+          git add . || exit 0
+          git commit -m "auto(): update data" || exit 0
+          git push || exit 0

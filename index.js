@@ -1,21 +1,42 @@
-// initialise dependencies
 const WebSocket = require("ws");
-// const dateFormat = require("dateformat");
-const fetch = require('node-fetch');
-var Table = require('cli-table');
+const fetch = require("node-fetch");
+
+const fs = require("fs");
 
 // config
 const pageUri = "https://www.health.gov.au/news/health-alerts/novel-coronavirus-2019-ncov-health-alert/coronavirus-covid-19-current-situation-and-case-numbers";
+// maps the graphIds to a machine-readable title:
+const graphIdMapping = {
+        "YfhJjRW": "locally-acquired-last-24-hours", // self-explanatory, single number
+        "jJWJXQs": "overseas-acquired-last-24-hours", // self-explanatory, single number
+        "JEjLq": "under-investigation-last-24-hours", // self-explanatory, single number
+        "pArYV": "currently-active-cases", // self-explanatory, single number
+        "QvUrm": "currently-hospitalised", // self-explanatory, single number
+        "kwfnAur": "tests-last-24-hours", // self-explanatory, single number
+        "pJfAWJv": "total-cases", // self-explanatory, single number
+        "ykJhGRM": "total-deaths", // self-explanatory, single number
+        "HuCJf": "total-tests", // self-explanatory, single number
+        "KdmpZ": "cases-by-jurisdiction", // currently (active cases) + (local, overseas, under investigation)(for last hours, for last 7 days), all filtered by state
+        "jcGTs": "daily-and-cumulative-au", // daily historical numbers for australia with cumulative count
+        "gjjZnj": "total-cases-by-jurisdiction", //
+        "CMLjmx": "total-cases-by-age-group-sex",
+        "PSWhPA": "total-cases-by-age-group-sex-table",
+        "kJKhDk": "total-deaths-by-age-group-sex",
+        "uJauhW": "total-deaths-by-age-group-sex-table",
+        "zfDpnUy": "tests-in-last-7-days-total",
+        "ybCdZWz": "cases-admitted-to-hospital",
+        "GJSFMHS": "cases-admitted-to-hospital-table",
+        "vpCstLd": "cases-aged-care",
+        "SfYPx": "cases-aged-care-table",
+        "ECq": "cases-home-care",
+        "aVJJAHx": "cases-home-care-table",
+}
 
 // get docId for the 2nd ws connection
 async function getDocId(pageUri) {
         return new Promise((resolve) => {
                 const referer = encodeURIComponent(pageUri);
                 const docListConnection = new WebSocket(`wss://covid19-data.health.gov.au/app/engineData?reloadUri=${referer}`);
-
-                docListConnection.on("open", () => {
-                        console.log("Connection to QLik engine established, loading list of documents.");
-                });
 
                 docListConnection.on("message", data => {
                         data = JSON.parse(data);
@@ -34,7 +55,6 @@ async function getDocId(pageUri) {
                                 let dataDocument = data.result.qDocList[0].value[0];
                                 let modifiedDate = dataDocument.qMeta.modifiedDate;
                                 let docId = dataDocument.qDocId;
-                                console.log(`Using document "${dataDocument.qDocName}", last modified at ${modifiedDate}.`);
                                 docListConnection.terminate();
                                 resolve(docId);
                         }
@@ -45,7 +65,6 @@ async function getDocId(pageUri) {
 // scrape the page for the graph ids
 async function getGraphIds(pageUri) {
         return new Promise((resolve, reject) => {
-                console.log("Scraping NSW Health page to get graphIds.")
                 fetch(pageUri).then(response => response.text()).then(html => {
                         // extract the config from the page
                         let graphIdRegex = /{"qlik_components":(\[({"component_id":"\w{1,10}"},?)*\])/;
@@ -63,7 +82,6 @@ async function getGraphIds(pageUri) {
 async function getWsConnectionForDocId(docId, pageUri) {
         return new Promise((resolve, reject) => {
                 const referer = encodeURIComponent(pageUri);
-                console.log(`Opening WebSocket for document: ${docId}`)
                 const qws = new WebSocket(`wss://covid19-data.health.gov.au/app/${docId}?reloadUri=${referer}`);
                 qws.on("open", () => {
                         resolve(qws);
@@ -71,10 +89,146 @@ async function getWsConnectionForDocId(docId, pageUri) {
         });
 }
 
+function getKPIData(graphObject) {
+        let graphId = graphObject.qInfo.qId;
+        let graphData = graphObject.qHyperCube.qGrandTotalRow[0].qNum;
+        let graphTitle = graphObject.qHyperCube.qMeasureInfo[0].qFallbackTitle;
+        return {
+                graphId: graphId,
+                type: "kpi",
+                title: graphTitle,
+                data: graphData
+        }
+}
+
+// get data as a matrix (mainly useful tables), e.g:
+// [["State", "Cases", "Deaths"]],
+// [[ "NSW" ,   244  ,    2    ]],
+// [[ "QLD" ,   123  ,    1    ]]
+function getMatrixData(graphObject) {
+        let graphId = graphObject.qInfo.qId;
+        let graphTitle = "Unknown";
+
+        let dimensions = graphObject.qHyperCube.qDimensionInfo.map(item => {
+                return item.qFallbackTitle;
+        })
+        let measures = graphObject.qHyperCube.qMeasureInfo.map(item => {
+                return item.qFallbackTitle;
+        });
+        let header = [...dimensions, ...measures]
+        let data = graphObject.qHyperCube.qDataPages[0].qMatrix.map(row => {
+                return row.map(datapoint => {
+                        if (isNaN(datapoint.qNum)) {
+                                return datapoint.qText;
+                        } else {
+                                return datapoint.qNum.toString();
+                        }
+                });
+        });
+
+        return {
+                graphId: graphId,
+                type: "matrix",
+                title: graphTitle,
+                data: {
+                        header: header,
+                        body: data,
+                        data: [header, ...data]
+                }
+        }
+}
+
+// get matrix data, then categorise it according to the dimension (x-axis)
+// {
+//         "NSW": {
+//                 "Cases": 244,
+//                 "Deaths": 2
+//         },
+//         "QLD": {
+//                 "Cases": 123,
+//                 "Deaths": 1
+//         }
+// }
+function getMatrixDataCategorised(graphObject, preferTextDimensions = false) {
+        let graphId = graphObject.qInfo.qId;
+        let graphTitle = "Unknown";
+
+        // x axis
+        let dimensions = graphObject.qHyperCube.qDimensionInfo.map(item => {
+                return {
+                        label: item.qFallbackTitle,
+                        type: "dimension"
+                };
+        });
+        // y axis - there may be two of these
+        let measures = graphObject.qHyperCube.qMeasureInfo.map(item => {
+                return {
+                        label: item.qFallbackTitle,
+                        type: "measure"
+                };
+        });
+        let labels = [...dimensions, ...measures];
+        let graphData = {};
+        for (row of graphObject.qHyperCube.qDataPages[0].qMatrix) {
+                let rowDimension = "";
+                for (datapointIndex in row) {
+                        let datapoint = row[datapointIndex];
+                        let label = labels[datapointIndex];
+                        if (label.type === "dimension") {
+                                if (preferTextDimensions) {
+                                        rowDimension = datapoint.qText;
+                                } else {
+                                        rowDimension = isNaN(datapoint.qNum) ? datapoint.qText : datapoint.qNum;
+                                }
+                        }
+                        if (typeof graphData[rowDimension] === "undefined") {
+                                graphData[rowDimension] = {};
+                        }
+                        if (label.type === "measure") {
+                                if (isNaN(datapoint.qNum)) {
+                                        graphData[rowDimension][label.label] = datapoint.qText;
+                                } else {
+                                        graphData[rowDimension][label.label] = datapoint.qNum;
+                                }
+                        }
+                }
+        }
+
+        return {
+                graphId: graphId,
+                type: "matrixCategorised",
+                title: graphTitle,
+                data: {
+                        data: graphData
+                }
+        }
+}
+
+function getBarChartData(graphObject) {
+        let graphId = graphObject.qInfo.qId;
+        let graphTitle = "Unknown";
+
+        let graphData = {};
+        for (element of graphObject.qHyperCube.qDataPages[0].qMatrix) {
+                let bin = isNaN(element[0].qNum) ? element[0].qText : element[0].qNum;
+                let category = isNaN(element[1].qNum) ? element[1].qText : element[1].qNum;
+                let value = isNaN(element[2].qNum) ? element[2].qText : element[2].qNum;
+                if (typeof graphData[bin] === "undefined") {
+                        graphData[bin] = {};
+                }
+                graphData[bin][category] = value;
+        }
+
+        return {
+                graphId: graphId,
+                type: "barchart",
+                title: graphTitle,
+                data: graphData
+        }
+}
+
 let docId = "";
 let graphIds = [];
-
-// TODO use anonymous async/awaits here
 
 Promise.all([getDocId(pageUri), getGraphIds(pageUri)]).then(results => {
         docId = results[0];
@@ -82,7 +236,6 @@ Promise.all([getDocId(pageUri), getGraphIds(pageUri)]).then(results => {
         return docId;
 })
 .then(docId => getWsConnectionForDocId(docId, pageUri))
-// we need this "expanded notation" because these steps we have to resolve inside an event listener
 .then(ws => new Promise((resolve, reject) => {
         ws.on("message", data => {
                 data = JSON.parse(data);
@@ -104,7 +257,6 @@ Promise.all([getDocId(pageUri), getGraphIds(pageUri)]).then(results => {
         let graphs = [];
         let requestIndex = 1;
 
-        // remove our earlier set event listener - TODO fix this spaghetti stuff
         ws.removeAllListeners("message");
         ws.on("message", data => {
                 data = JSON.parse(data);
@@ -134,45 +286,64 @@ Promise.all([getDocId(pageUri), getGraphIds(pageUri)]).then(results => {
         let graphs = results[1];
         let requestIndex = results[2];
 
+        let finalData = [];
+        let rawData = [];
+
         ws.removeAllListeners("message");
         ws.on("message", data => {
-                // console.log(data);
                 data = JSON.parse(data);
                 let graphObject = data.result.qLayout[0].value;
+                let graphId = graphObject.qInfo.qId;
                 let graphType = graphObject.qInfo.qType;
+                let graphData;
                 if (graphType === "kpi") {
-                        let graphNumber = graphObject.qHyperCube.qGrandTotalRow[0].qNum;
-                        let graphTitle = graphObject.qHyperCube.qMeasureInfo[0].qFallbackTitle;
-                        // console.log(`${graphTitle} - ${graphNumber}`);
+                        graphData = getKPIData(graphObject);
                 } else if (graphType === "table") {
-                        let tableDimensions = graphObject.qHyperCube.qDimensionInfo.map(item => {
-                                return item.qFallbackTitle;
-                        })
-                        let tableMeasures = graphObject.qHyperCube.qMeasureInfo.map(item => {
-                                return item.qFallbackTitle;
-                        });
-                        let tableHeader = [...tableDimensions, ...tableMeasures]
-                        let tableData = graphObject.qHyperCube.qDataPages[0].qMatrix.map(row => {
-                                return row.map(datapoint => {
-                                        if (isNaN(datapoint.qNum)) {
-                                                return datapoint.qText;
-                                        } else {
-                                                return datapoint.qNum.toString();
-                                        }
-                                });
-                        });
-
-                        // just logging, this can be removed to get the data
-                        {
-                                var table = new Table({
-                                        head: tableHeader
-                                });
-                                table.push(...tableData);
-                                console.log(table.toString());
+                        graphData = getMatrixData(graphObject);
+                } else if (graphType === "widget") {
+                        let widgetType = graphObject.widgetMeta.name;
+                        if (widgetType === "KPI2") {
+                                graphData = getKPIData(graphObject);
+                        } else if (widgetType === "CustomizedSimpleTable") {
+                                graphData = getMatrixData(graphObject);
+                        } else {
+                                graphData = {
+                                        graphId: "null",
+                                        type: "unknown",
+                                        title: `Error - unknown widget type "${widgetType}" - skipped`,
+                                        data: null
+                                }
+                                console.log(`Error - unknown widget type "${widgetType}" - skipped`);
                         }
-                        // console.log(JSON.stringify(tableData));
+                } else if (graphType === "barchart" || graphType === "qlik-barplus-chart") {
+                        graphData = getMatrixDataCategorised(graphObject);
+                } else if (graphType === "combochart") {
+                        graphData = getMatrixDataCategorised(graphObject, true);
                 } else {
-                        console.log(graphType);
+                        graphData = {
+                                graphId: "null",
+                                type: "unknown",
+                                title: `Error - unknown graph type "${graphType}" - skipped`,
+                                data: null
+                        }
+                        console.log(`Error - unknown graph type "${graphType}" - skipped`);
+                }
+                let graphName = graphIdMapping[graphId];
+                graphData.graphId = graphId;
+                graphData.name = graphName;
+                finalData.push(graphData);
+                rawData.push(graphObject);
+
+                if (finalData.length === graphIds.length) {
+                        ws.terminate();
+
+                        let datetime = new Date();
+                        let timeString = datetime.toISOString().slice(0, 10);
+
+                        fs.writeFileSync(`data/${timeString}.json`, JSON.stringify(finalData));
+                        fs.writeFileSync(`data/${timeString}.raw.json`, JSON.stringify(rawData));
+
+                        process.exit();
                 }
         });
 
@@ -186,61 +357,4 @@ Promise.all([getDocId(pageUri), getGraphIds(pageUri)]).then(results => {
                         id: (requestIndex++, requestIndex)
                 }));
         }
-}));/*.then(ws => {
-        ws.on("message", data => {
-                data = JSON.parse(data);
-                if (data.result && data.result.qReturn) {
-                        return [data.id, ws];
-                }
-        });
-        ws.send(JSON.stringify({
-                delta: true,
-                method: "OpenDoc",
-                handle: -1,
-                params: [docId],
-                id: 1,
-                jsonrpc: "2.0"
-        }));
-}).then(results => {
-        console.log(results);
-        let handleId = results[0];
-        let ws = results[1];
-        for (graphId of graphIds) {
-                ws.send(JSON.stringify({
-                        delta: true,
-                        method: "GetObject",
-                        handle: handleId,
-                        params: [graphId],
-                        jsonrpc: "2.0"
-                }));
-        }
-});*/
-
-/*
-let finalData = {};
-
-const getDocumentById = docId => {
-        let requestIndex = 0;
-        console.log(`Loading document by ID: ${docId}`)
-        const qws = new WebSocket(`wss://covid19-data.health.gov.au/app/${docId}?reloadUri=${referer}`);
-        qws.on("open", () => {
-                console.log("Connection to QLik established, loading document data.");
-        });
-        qws.on("message", data => {
-                console.log(data);
-                data = JSON.parse(data);
-                if (requestIndex === 0 && data.method && data.method === "OnConnected") {
-                        qws.send(JSON.stringify({
-                                delta: true,
-                                method: "OpenDoc",
-                                handle: -1,
-                                params: [
-                                        "e8635e3f-b339-4ab3-a9de-b4e3b15c6bbc"
-                                ],
-                                id: 1,
-                                jsonrpc: "2.0"
-                        }));
-                        requests = 1;
-                }
-        });
-}*/
+}));
