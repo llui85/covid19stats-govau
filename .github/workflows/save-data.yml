@@ -23,7 +23,7 @@ jobs:
     - name: npm install
       timeout-minutes: 3
       run: |
-        node index.js
+        npm install
     - name: Download Data
       timeout-minutes: 3
       run: |
