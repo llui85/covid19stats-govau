@@ -153,7 +153,7 @@ function getMatrixDataCategorised(graphObject, preferTextDimensions = false) {
         let graphId = graphObject.qInfo.qId;
         let graphTitle = "Unknown";
 
-        // x axis
+        // x axis - only 1
         let dimensions = graphObject.qHyperCube.qDimensionInfo.map(item => {
                 return {
                         label: item.qFallbackTitle,
@@ -190,6 +190,60 @@ function getMatrixDataCategorised(graphObject, preferTextDimensions = false) {
                                 } else {
                                         graphData[rowDimension][label.label] = datapoint.qNum;
                                 }
+                        }
+                }
+        }
+
+        return {
+                graphId: graphId,
+                type: "matrixCategorised",
+                title: graphTitle,
+                data: {
+                        data: graphData
+                }
+        }
+}
+
+function getMatrixDataCategorisedByKey(graphObject, preferTextDimensions = false) {
+        let graphId = graphObject.qInfo.qId;
+        let graphTitle = "Unknown";
+
+        // x axis - only 1
+        let dimensions = graphObject.qHyperCube.qDimensionInfo.map(item => {
+                return {
+                        label: item.qFallbackTitle,
+                        type: "dimension"
+                };
+        });
+        // y axis - there may be multiple of these
+        let measures = graphObject.qHyperCube.qMeasureInfo.map(item => {
+                return {
+                        label: item.qFallbackTitle,
+                        type: "measure"
+                };
+        });
+        let labels = [...dimensions, ...measures];
+        let graphMatrix = graphObject.qHyperCube.qDataPages[0].qMatrix;
+        let graphData = {};
+
+        for (let measureIndex = 0; measureIndex < measures.length; measureIndex++) {
+                let measure = measures[measureIndex];
+                let labelIndex = dimensions.length + measureIndex;
+                if (typeof graphData[measure.label] === "undefined") {
+                        graphData[measure.label] = {};
+                }
+                for (let rowIndex = 0; rowIndex < graphMatrix.length; rowIndex++) {
+                        let datapoint = graphMatrix[rowIndex][labelIndex];
+                        let dimension = graphMatrix[rowIndex][0];
+                        if (preferTextDimensions || isNaN(dimension.qNum)) {
+                                dimension = dimension.qText;
+                        } else {
+                                dimension = dimension.qNum;
+                        }
+                        if (isNaN(datapoint.qNum)) {
+                                graphData[measure.label][dimension] = datapoint.qText;
+                        } else {
+                                graphData[measure.label][dimension] = datapoint.qNum;
                         }
                 }
         }
