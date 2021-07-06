@@ -1,6 +1,6 @@
 const WebSocket = require("ws");
 const fetch = require("node-fetch");
-
+const moment = require('moment');
 const fs = require("fs");
 
 // config
@@ -56,7 +56,7 @@ async function getDocId(pageUri) {
                                 let modifiedDate = dataDocument.qMeta.modifiedDate;
                                 let docId = dataDocument.qDocId;
                                 docListConnection.terminate();
-                                resolve(docId);
+                                resolve([docId, modifiedDate]);
                         }
                 });
         });
@@ -284,10 +284,12 @@ function getBarChartData(graphObject) {
 }
 
 let docId = "";
+let docDate = "";
 let graphIds = [];
 
 Promise.all([getDocId(pageUri), getGraphIds(pageUri)]).then(results => {
-        docId = results[0];
+        docId = results[0][0];
+        docDate = results[0][1];
         graphIds = results[1];
         return docId;
 })
@@ -393,11 +395,10 @@ Promise.all([getDocId(pageUri), getGraphIds(pageUri)]).then(results => {
                 if (finalData.length === graphIds.length) {
                         ws.terminate();
 
-                        let datetime = new Date();
-                        let timeString = datetime.toISOString().slice(0, 10);
+                        let formattedDate = moment(docDate).format('YYYY-MM-DD');
 
-                        fs.writeFileSync(`data/${timeString}.json`, JSON.stringify(finalData));
-                        fs.writeFileSync(`data/${timeString}.raw.json`, JSON.stringify(rawData));
+                        fs.writeFileSync(`data/${formattedDate}.json`, JSON.stringify(finalData));
+                        fs.writeFileSync(`data/${formattedDate}.raw.json`, JSON.stringify(rawData));
 
                         process.exit();
                 }
