@@ -160,7 +160,7 @@ function getMatrixDataCategorised(graphObject, preferTextDimensions = false) {
                         type: "dimension"
                 };
         });
-        // y axis - there may be two of these
+        // y axis - there may be many of these
         let measures = graphObject.qHyperCube.qMeasureInfo.map(item => {
                 return {
                         label: item.qFallbackTitle,
@@ -170,6 +170,7 @@ function getMatrixDataCategorised(graphObject, preferTextDimensions = false) {
         let labels = [...dimensions, ...measures];
         let graphData = {};
         for (row of graphObject.qHyperCube.qDataPages[0].qMatrix) {
+                // if (debug) console.log(row);
                 let rowDimension = "";
                 for (datapointIndex in row) {
                         let datapoint = row[datapointIndex];
@@ -180,6 +181,7 @@ function getMatrixDataCategorised(graphObject, preferTextDimensions = false) {
                                 } else {
                                         rowDimension = isNaN(datapoint.qNum) ? datapoint.qText : datapoint.qNum;
                                 }
+                                if (debug) console.log("dimension to " + rowDimension);
                         }
                         if (typeof graphData[rowDimension] === "undefined") {
                                 graphData[rowDimension] = {};
@@ -370,9 +372,9 @@ Promise.all([getDocId(pageUri), getGraphIds(pageUri)]).then(results => {
                                 console.log(`Error - unknown widget type "${widgetType}" - skipped`);
                         }
                 } else if (graphType === "barchart" || graphType === "qlik-barplus-chart") {
-                        graphData = getMatrixDataCategorised(graphObject);
+                        graphData = getMatrixDataCategorisedByKey(graphObject);
                 } else if (graphType === "combochart") {
-                        graphData = getMatrixDataCategorised(graphObject, true);
+                        graphData = getMatrixDataCategorisedByKey(graphObject, true);
                 } else {
                         graphData = {
                                 graphId: "null",
