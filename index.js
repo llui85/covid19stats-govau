@@ -250,7 +250,7 @@ function getMatrixDataCategorisedByKey(graphObject, preferTextDimensions = false
 
         return {
                 graphId: graphId,
-                type: "matrixCategorised",
+                type: "matrixCategorisedByKey",
                 title: graphTitle,
                 data: {
                         data: graphData
