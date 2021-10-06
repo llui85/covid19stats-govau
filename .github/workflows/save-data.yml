@@ -28,6 +28,7 @@ jobs:
       timeout-minutes: 3
       run: |
         node index.js
+        node nswstats.js
     - name: Push data
       run: |
           git config user.name llui85
