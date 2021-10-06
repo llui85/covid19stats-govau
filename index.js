@@ -397,8 +397,8 @@ Promise.all([getDocId(pageUri), getGraphIds(pageUri)]).then(results => {
 
                         let formattedDate = moment(docDate).format('YYYY-MM-DD');
 
-                        fs.writeFileSync(`data/${formattedDate}.json`, JSON.stringify(finalData));
-                        fs.writeFileSync(`data/${formattedDate}.raw.json`, JSON.stringify(rawData));
+                        fs.writeFileSync(`data/federal/${formattedDate}.json`, JSON.stringify(finalData));
+                        fs.writeFileSync(`data/federal/${formattedDate}.raw.json`, JSON.stringify(rawData));
 
                         process.exit();
                 }
