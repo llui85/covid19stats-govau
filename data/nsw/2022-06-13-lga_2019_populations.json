@@ -1,0 +1,648 @@
+{
+	"data":[
+ {
+   "lga_code19": 10050,
+   "lga_name19": "Albury (C)",
+   "population": 55055
+ },
+ {
+   "lga_code19": 10130,
+   "lga_name19": "Armidale Regional (A)",
+   "population": 29704
+ },
+ {
+   "lga_code19": 10250,
+   "lga_name19": "Ballina (A)",
+   "population": 45217
+ },
+ {
+   "lga_code19": 10300,
+   "lga_name19": "Balranald (A)",
+   "population": 2306
+ },
+ {
+   "lga_code19": 10470,
+   "lga_name19": "Bathurst Regional (A)",
+   "population": 43996
+ },
+ {
+   "lga_code19": 10500,
+   "lga_name19": "Bayside (A)",
+   "population": 181472
+ },
+ {
+   "lga_code19": 10550,
+   "lga_name19": "Bega Valley (A)",
+   "population": 34727
+ },
+ {
+   "lga_code19": 10600,
+   "lga_name19": "Bellingen (A)",
+   "population": 13141
+ },
+ {
+   "lga_code19": 10650,
+   "lga_name19": "Berrigan (A)",
+   "population": 8784
+ },
+ {
+   "lga_code19": 10750,
+   "lga_name19": "Blacktown (C)",
+   "population": 382831
+ },
+ {
+   "lga_code19": 10800,
+   "lga_name19": "Bland (A)",
+   "population": 5937
+ },
+ {
+   "lga_code19": 10850,
+   "lga_name19": "Blayney (A)",
+   "population": 7382
+ },
+ {
+   "lga_code19": 10900,
+   "lga_name19": "Blue Mountains (C)",
+   "population": 79195
+ },
+ {
+   "lga_code19": 10950,
+   "lga_name19": "Bogan (A)",
+   "population": 2529
+ },
+ {
+   "lga_code19": 11150,
+   "lga_name19": "Bourke (A)",
+   "population": 2625
+ },
+ {
+   "lga_code19": 11200,
+   "lga_name19": "Brewarrina (A)",
+   "population": 1553
+ },
+ {
+   "lga_code19": 11250,
+   "lga_name19": "Broken Hill (C)",
+   "population": 17269
+ },
+ {
+   "lga_code19": 11300,
+   "lga_name19": "Burwood (A)",
+   "population": 40866
+ },
+ {
+   "lga_code19": 11350,
+   "lga_name19": "Byron (A)",
+   "population": 35773
+ },
+ {
+   "lga_code19": 11400,
+   "lga_name19": "Cabonne (A)",
+   "population": 13677
+ },
+ {
+   "lga_code19": 11450,
+   "lga_name19": "Camden (A)",
+   "population": 107806
+ },
+ {
+   "lga_code19": 11500,
+   "lga_name19": "Campbelltown (C) (NSW)",
+   "population": 174078
+ },
+ {
+   "lga_code19": 11520,
+   "lga_name19": "Canada Bay (A)",
+   "population": 96550
+ },
+ {
+   "lga_code19": 11570,
+   "lga_name19": "Canterbury-Bankstown (A)",
+   "population": 380406
+ },
+ {
+   "lga_code19": 11600,
+   "lga_name19": "Carrathool (A)",
+   "population": 2796
+ },
+ {
+   "lga_code19": 11650,
+   "lga_name19": "Central Coast (C) (NSW)",
+   "population": 345809
+ },
+ {
+   "lga_code19": 11700,
+   "lga_name19": "Central Darling (A)",
+   "population": 1829
+ },
+ {
+   "lga_code19": 11720,
+   "lga_name19": "Cessnock (C)",
+   "population": 61256
+ },
+ {
+   "lga_code19": 11730,
+   "lga_name19": "Clarence Valley (A)",
+   "population": 51730
+ },
+ {
+   "lga_code19": 11750,
+   "lga_name19": "Cobar (A)",
+   "population": 4417
+ },
+ {
+   "lga_code19": 11800,
+   "lga_name19": "Coffs Harbour (C)",
+   "population": 77648
+ },
+ {
+   "lga_code19": 12000,
+   "lga_name19": "Coolamon (A)",
+   "population": 4291
+ },
+ {
+   "lga_code19": 12150,
+   "lga_name19": "Coonamble (A)",
+   "population": 3907
+ },
+ {
+   "lga_code19": 12160,
+   "lga_name19": "Cootamundra-Gundagai Regional (A)",
+   "population": 11225
+ },
+ {
+   "lga_code19": 12350,
+   "lga_name19": "Cowra (A)",
+   "population": 12730
+ },
+ {
+   "lga_code19": 12390,
+   "lga_name19": "Dubbo Regional (A)",
+   "population": 54044
+ },
+ {
+   "lga_code19": 12380,
+   "lga_name19": "Cumberland (A)",
+   "population": 242674
+ },
+ {
+   "lga_code19": 12700,
+   "lga_name19": "Dungog (A)",
+   "population": 9664
+ },
+ {
+   "lga_code19": 12730,
+   "lga_name19": "Edward River (A)",
+   "population": 9083
+ },
+ {
+   "lga_code19": 12750,
+   "lga_name19": "Eurobodalla (A)",
+   "population": 38952
+ },
+ {
+   "lga_code19": 12850,
+   "lga_name19": "Fairfield (C)",
+   "population": 210825
+ },
+ {
+   "lga_code19": 12870,
+   "lga_name19": "Federation (A)",
+   "population": 12598
+ },
+ {
+   "lga_code19": 12900,
+   "lga_name19": "Forbes (A)",
+   "population": 9920
+ },
+ {
+   "lga_code19": 12930,
+   "lga_name19": "Georges River (A)",
+   "population": 160272
+ },
+ {
+   "lga_code19": 12950,
+   "lga_name19": "Gilgandra (A)",
+   "population": 4229
+ },
+ {
+   "lga_code19": 13010,
+   "lga_name19": "Glen Innes Severn (A)",
+   "population": 8873
+ },
+ {
+   "lga_code19": 13310,
+   "lga_name19": "Goulburn Mulwaree (A)",
+   "population": 31554
+ },
+ {
+   "lga_code19": 13340,
+   "lga_name19": "Greater Hume Shire (A)",
+   "population": 10841
+ },
+ {
+   "lga_code19": 13450,
+   "lga_name19": "Griffith (C)",
+   "population": 27155
+ },
+ {
+   "lga_code19": 13550,
+   "lga_name19": "Gunnedah (A)",
+   "population": 12690
+ },
+ {
+   "lga_code19": 13660,
+   "lga_name19": "Gwydir (A)",
+   "population": 5299
+ },
+ {
+   "lga_code19": 13800,
+   "lga_name19": "Hawkesbury (C)",
+   "population": 67749
+ },
+ {
+   "lga_code19": 13850,
+   "lga_name19": "Hay (A)",
+   "population": 2943
+ },
+ {
+   "lga_code19": 13910,
+   "lga_name19": "Hilltops (A)",
+   "population": 18617
+ },
+ {
+   "lga_code19": 14000,
+   "lga_name19": "Hornsby (A)",
+   "population": 152419
+ },
+ {
+   "lga_code19": 14100,
+   "lga_name19": "Hunters Hill (A)",
+   "population": 14962
+ },
+ {
+   "lga_code19": 14170,
+   "lga_name19": "Inner West (A)",
+   "population": 201880
+ },
+ {
+   "lga_code19": 14200,
+   "lga_name19": "Inverell (A)",
+   "population": 17780
+ },
+ {
+   "lga_code19": 14300,
+   "lga_name19": "Junee (A)",
+   "population": 6676
+ },
+ {
+   "lga_code19": 14350,
+   "lga_name19": "Kempsey (A)",
+   "population": 29921
+ },
+ {
+   "lga_code19": 14400,
+   "lga_name19": "Kiama (A)",
+   "population": 23685
+ },
+ {
+   "lga_code19": 14500,
+   "lga_name19": "Ku-ring-gai (A)",
+   "population": 127603
+ },
+ {
+   "lga_code19": 14550,
+   "lga_name19": "Kyogle (A)",
+   "population": 8788
+ },
+ {
+   "lga_code19": 14600,
+   "lga_name19": "Lachlan (A)",
+   "population": 6089
+ },
+ {
+   "lga_code19": 14650,
+   "lga_name19": "Lake Macquarie (C)",
+   "population": 207775
+ },
+ {
+   "lga_code19": 14700,
+   "lga_name19": "Lane Cove (A)",
+   "population": 40534
+ },
+ {
+   "lga_code19": 14750,
+   "lga_name19": "Leeton (A)",
+   "population": 11343
+ },
+ {
+   "lga_code19": 14850,
+   "lga_name19": "Lismore (C)",
+   "population": 43667
+ },
+ {
+   "lga_code19": 14870,
+   "lga_name19": "Lithgow (C)",
+   "population": 21516
+ },
+ {
+   "lga_code19": 14900,
+   "lga_name19": "Liverpool (C)",
+   "population": 231296
+ },
+ {
+   "lga_code19": 14920,
+   "lga_name19": "Liverpool Plains (A)",
+   "population": 7853
+ },
+ {
+   "lga_code19": 14950,
+   "lga_name19": "Lockhart (A)",
+   "population": 3259
+ },
+ {
+   "lga_code19": 15050,
+   "lga_name19": "Maitland (C)",
+   "population": 87395
+ },
+ {
+   "lga_code19": 15240,
+   "lga_name19": "Mid-Coast (A)",
+   "population": 94395
+ },
+ {
+   "lga_code19": 15270,
+   "lga_name19": "Mid-Western Regional (A)",
+   "population": 25367
+ },
+ {
+   "lga_code19": 15300,
+   "lga_name19": "Moree Plains (A)",
+   "population": 13077
+ },
+ {
+   "lga_code19": 15350,
+   "lga_name19": "Mosman (A)",
+   "population": 30785
+ },
+ {
+   "lga_code19": 15520,
+   "lga_name19": "Murray River (A)",
+   "population": 12330
+ },
+ {
+   "lga_code19": 15560,
+   "lga_name19": "Murrumbidgee (A)",
+   "population": 3916
+ },
+ {
+   "lga_code19": 15650,
+   "lga_name19": "Muswellbrook (A)",
+   "population": 16355
+ },
+ {
+   "lga_code19": 15700,
+   "lga_name19": "Nambucca (A)",
+   "population": 19861
+ },
+ {
+   "lga_code19": 15750,
+   "lga_name19": "Narrabri (A)",
+   "population": 13049
+ },
+ {
+   "lga_code19": 15800,
+   "lga_name19": "Narrandera (A)",
+   "population": 5858
+ },
+ {
+   "lga_code19": 15850,
+   "lga_name19": "Narromine (A)",
+   "population": 6460
+ },
+ {
+   "lga_code19": 15900,
+   "lga_name19": "Newcastle (C)",
+   "population": 167363
+ },
+ {
+   "lga_code19": 15950,
+   "lga_name19": "North Sydney (A)",
+   "population": 75094
+ },
+ {
+   "lga_code19": 15990,
+   "lga_name19": "Northern Beaches (A)",
+   "population": 274041
+ },
+ {
+   "lga_code19": 16100,
+   "lga_name19": "Oberon (A)",
+   "population": 5419
+ },
+ {
+   "lga_code19": 16150,
+   "lga_name19": "Orange (C)",
+   "population": 42503
+ },
+ {
+   "lga_code19": 16200,
+   "lga_name19": "Parkes (A)",
+   "population": 14728
+ },
+ {
+   "lga_code19": 16260,
+   "lga_name19": "Parramatta (C)",
+   "population": 260296
+ },
+ {
+   "lga_code19": 16350,
+   "lga_name19": "Penrith (C)",
+   "population": 216282
+ },
+ {
+   "lga_code19": 16380,
+   "lga_name19": "Port Macquarie-Hastings (A)",
+   "population": 85952
+ },
+ {
+   "lga_code19": 16400,
+   "lga_name19": "Port Stephens (A)",
+   "population": 74506
+ },
+ {
+   "lga_code19": 16490,
+   "lga_name19": "Queanbeyan-Palerang Regional (A)",
+   "population": 62239
+ },
+ {
+   "lga_code19": 16550,
+   "lga_name19": "Randwick (C)",
+   "population": 156619
+ },
+ {
+   "lga_code19": 16610,
+   "lga_name19": "Richmond Valley (A)",
+   "population": 23490
+ },
+ {
+   "lga_code19": 16700,
+   "lga_name19": "Ryde (C)",
+   "population": 133224
+ },
+ {
+   "lga_code19": 16900,
+   "lga_name19": "Shellharbour (C)",
+   "population": 74622
+ },
+ {
+   "lga_code19": 16950,
+   "lga_name19": "Shoalhaven (C)",
+   "population": 107191
+ },
+ {
+   "lga_code19": 17000,
+   "lga_name19": "Singleton (A)",
+   "population": 23380
+ },
+ {
+   "lga_code19": 17040,
+   "lga_name19": "Snowy Monaro Regional (A)",
+   "population": 20997
+ },
+ {
+   "lga_code19": 17080,
+   "lga_name19": "Snowy Valleys (A)",
+   "population": 14412
+ },
+ {
+   "lga_code19": 17100,
+   "lga_name19": "Strathfield (A)",
+   "population": 47767
+ },
+ {
+   "lga_code19": 17150,
+   "lga_name19": "Sutherland Shire (A)",
+   "population": 232369
+ },
+ {
+   "lga_code19": 17200,
+   "lga_name19": "Sydney (C)",
+   "population": 248736
+ },
+ {
+   "lga_code19": 17310,
+   "lga_name19": "Tamworth Regional (A)",
+   "population": 62545
+ },
+ {
+   "lga_code19": 17350,
+   "lga_name19": "Temora (A)",
+   "population": 6274
+ },
+ {
+   "lga_code19": 17400,
+   "lga_name19": "Tenterfield (A)",
+   "population": 6470
+ },
+ {
+   "lga_code19": 17420,
+   "lga_name19": "The Hills Shire (A)",
+   "population": 183791
+ },
+ {
+   "lga_code19": 17550,
+   "lga_name19": "Tweed (A)",
+   "population": 98382
+ },
+ {
+   "lga_code19": 17620,
+   "lga_name19": "Upper Hunter Shire (A)",
+   "population": 14167
+ },
+ {
+   "lga_code19": 17640,
+   "lga_name19": "Upper Lachlan Shire (A)",
+   "population": 8274
+ },
+ {
+   "lga_code19": 17650,
+   "lga_name19": "Uralla (A)",
+   "population": 5944
+ },
+ {
+   "lga_code19": 17750,
+   "lga_name19": "Wagga Wagga (C)",
+   "population": 65770
+ },
+ {
+   "lga_code19": 17850,
+   "lga_name19": "Walcha (A)",
+   "population": 3105
+ },
+ {
+   "lga_code19": 17900,
+   "lga_name19": "Walgett (A)",
+   "population": 5828
+ },
+ {
+   "lga_code19": 17950,
+   "lga_name19": "Warren (A)",
+   "population": 2716
+ },
+ {
+   "lga_code19": 18020,
+   "lga_name19": "Warrumbungle Shire (A)",
+   "population": 9209
+ },
+ {
+   "lga_code19": 18050,
+   "lga_name19": "Waverley (A)",
+   "population": 74276
+ },
+ {
+   "lga_code19": 18100,
+   "lga_name19": "Weddin (A)",
+   "population": 3596
+ },
+ {
+   "lga_code19": 18200,
+   "lga_name19": "Wentworth (A)",
+   "population": 7090
+ },
+ {
+   "lga_code19": 18250,
+   "lga_name19": "Willoughby (C)",
+   "population": 81196
+ },
+ {
+   "lga_code19": 18350,
+   "lga_name19": "Wingecarribee (A)",
+   "population": 51760
+ },
+ {
+   "lga_code19": 18400,
+   "lga_name19": "Wollondilly (A)",
+   "population": 54005
+ },
+ {
+   "lga_code19": 18450,
+   "lga_name19": "Wollongong (C)",
+   "population": 219798
+ },
+ {
+   "lga_code19": 18500,
+   "lga_name19": "Woollahra (A)",
+   "population": 59431
+ },
+ {
+   "lga_code19": 18710,
+   "lga_name19": "Yass Valley (A)",
+   "population": 17321
+ },
+ {
+   "lga_code19": 19399,
+   "lga_name19": "Unincorporated NSW",
+   "population": 961
+ }
+]}
