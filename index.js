@@ -3,6 +3,8 @@ const fetch = require("node-fetch");
 const moment = require('moment');
 const fs = require("fs");
 
+console.log("[au] starting");
+
 // config
 const pageUri = "https://www.health.gov.au/news/health-alerts/novel-coronavirus-2019-ncov-health-alert/coronavirus-covid-19-current-situation-and-case-numbers";
 // maps the graphIds to a machine-readable title:
@@ -288,13 +290,18 @@ let docDate = "";
 let graphIds = [];
 
 Promise.all([getDocId(pageUri), getGraphIds(pageUri)]).then(results => {
+        console.log("[au] got docId & graphIds");
         docId = results[0][0];
         docDate = results[0][1];
         graphIds = results[1];
         return docId;
 })
-.then(docId => getWsConnectionForDocId(docId, pageUri))
+.then(docId => {
+        console.log("[au] getting ws connection")
+        return getWsConnectionForDocId(docId, pageUri);
+})
 .then(ws => new Promise((resolve, reject) => {
+        console.log("[au] got ws connection")
         ws.on("message", data => {
                 data = JSON.parse(data);
                 if (data.result && data.result.qReturn) {
