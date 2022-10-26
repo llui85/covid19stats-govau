@@ -7,6 +7,8 @@ const BASE_URL = 'https://nswdac-covid-19-postcode-heatmap.azurewebsites.net/dat
 const CURRENT_DATE = moment().format('YYYY-MM-DD');
 const DATA_PATH = './data/nsw';
 
+console.log("[nsw] starting downloader");
+
 let datafiles = [
 	'active_cases.json',
 	'agedata.json',
@@ -29,6 +31,7 @@ let datafiles = [
 ];
 
 let requests = datafiles.map(filename => {
+	console.log(`[nsw] downloading ${filename}`);
 	return fetch(BASE_URL + filename);
 });
 
@@ -38,6 +41,7 @@ Promise.all(requests).then(responses => {
 	for (let index in data) {
 		let filename = datafiles[index];
 		let fileData = data[index];
+		console.log(`[nsw] writing date for ${filename}`);
 
 		let targetFilePath = `${DATA_PATH}/${CURRENT_DATE}-${filename}`;
 		fs.writeFileSync(targetFilePath, fileData);
