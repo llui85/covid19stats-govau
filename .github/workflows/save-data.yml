@@ -27,7 +27,6 @@ jobs:
     - name: Download data
       timeout-minutes: 3
       run: |
-        node index.js
         node nswstats.js
     - name: Push data
       run: |
